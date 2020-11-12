@@ -4,14 +4,14 @@ FROM python:alpine
 RUN apk add --no-cache ca-certificates && update-ca-certificates
 
 # Install the required packages
-RUN pip install --no-cache-dir redis flower
+RUN pip install --no-cache-dir redis flower pymongo
 
 # PYTHONUNBUFFERED: Force stdin, stdout and stderr to be totally unbuffered. (equivalent to `python -u`)
 # PYTHONHASHSEED: Enable hash randomization (equivalent to `python -R`)
 # PYTHONDONTWRITEBYTECODE: Do not write byte files to disk, since we maintain it as readonly. (equivalent to `python -B`)
 ENV PYTHONUNBUFFERED=1 PYTHONHASHSEED=random PYTHONDONTWRITEBYTECODE=1
 
-ENV PROJECT_CELERY_BROKER_URL=redis://192.168.23.96:6379/0
+ENV PROJECT_CELERY_BROKER_URL=redis://127.0.0.1:6379/0
 
 # Default port
 EXPOSE 5555
