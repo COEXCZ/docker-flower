@@ -1,10 +1,14 @@
 FROM python:alpine
 
+ARG CELERY_VERSION=5.3.6
+ARG FLOWER_VERSION=2.0.1
+
 # Get latest root certificates
 RUN apk add --no-cache ca-certificates && update-ca-certificates
 
 # Install the required packages
-RUN pip install --no-cache-dir redis flower
+RUN pip install -U pip setuptools
+RUN pip install --no-cache-dir celery==${CELERY_VERSION} flower==${FLOWER_VERSION} redis
 
 # PYTHONUNBUFFERED: Force stdin, stdout and stderr to be totally unbuffered. (equivalent to `python -u`)
 # PYTHONHASHSEED: Enable hash randomization (equivalent to `python -R`)
@@ -19,4 +23,4 @@ EXPOSE 5555
 # Run as a non-root user by default, run as user with least privileges.
 USER nobody
 
-ENTRYPOINT exec flower --broker=$PROJECT_CELERY_BROKER_URL
+ENTRYPOINT celery --broker=$PROJECT_CELERY_BROKER_URL flower
